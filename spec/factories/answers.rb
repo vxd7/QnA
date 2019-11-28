@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :answer do
     body { "MyString" }
-    association :question
+    question
   end
 
   trait :invalid do
