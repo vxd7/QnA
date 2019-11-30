@@ -12,7 +12,7 @@ feature 'User can create an answer to the question', %q{
   describe 'Authenticated user' do
     background do
       sign_in(user)
-      visit questions_path question
+      visit question_path question
     end
 
     scenario 'answers a question' do
