@@ -7,17 +7,26 @@ feature 'User can view the list of all questions', %q{
 } do
 
   given(:user) { create(:user) }
+  given!(:questions) { create_list(:question, 3, :different) }
 
   scenario 'Authenticated user views list of all questions' do
     sign_in(user)
     visit questions_path
 
     expect(page).to have_content 'All questions'
+    questions.each do |question|
+      expect(page).to have_content question.title
+      expect(page).to have_content question.body
+    end
   end
 
   scenario 'Unauthenticated user views list of all questions' do
     visit questions_path
 
     expect(page).to have_content 'All questions'
+    questions.each do |question|
+      expect(page).to have_content question.title
+      expect(page).to have_content question.body
+    end
   end
 end
