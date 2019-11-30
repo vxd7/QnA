@@ -7,7 +7,7 @@ feature 'User can sign in', %q{
 } do
 
   # 'let' in unit tests
-  given(:user) { User.create!(email: 'user@test.com', password: '123456') }
+  given(:user) { create(:user) }
 
   # 'before' in unit tests
   background { visit new_user_session_path }
