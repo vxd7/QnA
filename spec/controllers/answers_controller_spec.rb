@@ -1,11 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
+  let(:user) { create(:user) }
   let(:question) { create(:question) }
 
   describe 'GET #new' do
     # Answer is a dependent model of Question model
     # so to create it we need question id
+    before { login(user) }
     before { get :new, params: { question_id: question } }
 
     it 'should assign question to @question' do
@@ -22,6 +24,8 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'POST #create' do
+    before { login(user) }
+
     context 'with valid attributes' do
       it 'assigns correct question (for this answer) to @question' do
         post :create, params: { answer: attributes_for(:answer), question_id: question }
