@@ -1,2 +1,5 @@
 h1= @question.title
 p= @question.body
+
+h2= 'Create an answer'
+= render 'answers/form', question: @question, answer: @question.answers.new
