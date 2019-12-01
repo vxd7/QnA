@@ -1,5 +1,9 @@
 h1= @question.title
 p= @question.body
 
+h2= 'Answers to this question'
+- @question.answers.each do |ans|
+  = render 'shared/answer', answer: ans
+
 h2= 'Create an answer'
 = render 'answers/form', question: @question, answer: @question.answers.new
