@@ -1,6 +1,9 @@
 h1= @question.title
 p= @question.body
 
+h3 Avaliable actions
+= render 'actions', question: @question
+
 h2= 'Answers to this question'
 - @question.answers.each do |ans|
   = render 'shared/answer', answer: ans
