@@ -35,11 +35,20 @@ class QuestionsController < ApplicationController
   end
 
   def destroy
-    @question.destroy
-    redirect_to questions_path
+    # Check if user is authorized to delete the question
+    if user_authorized
+      @question.destroy
+      redirect_to questions_path, notice: 'Question was successfully deleted'
+    else
+      redirect_to questions_path, notice: 'Cannot delete the question'
+    end
   end
 
   private
+
+  def user_authorized
+    @question.author == current_user
+  end
 
   def load_question
     @question = Question.find(params[:id])
