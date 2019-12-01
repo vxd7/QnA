@@ -4,10 +4,12 @@ class AnswersController < ApplicationController
 
   def new
     @answer = @question.answers.new
+    @answer.author = current_user
   end
 
   def create
     @answer = @question.answers.new(answer_params)
+    @answer.author = current_user
 
     if @answer.save
       redirect_to @answer, notice: 'Your answer was successfully created'
@@ -23,11 +25,10 @@ class AnswersController < ApplicationController
   private
 
   def answer_params
-    params.require(:answer).permit(:body, :author)
+    params.require(:answer).permit(:body)
   end
 
   def load_question
     @question = Question.find(params[:question_id])
   end
 end
-
