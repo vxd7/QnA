@@ -21,9 +21,9 @@ class AnswersController < ApplicationController
   end
 
   private
-  
+
   def answer_params
-    params.require(:answer).permit(:body)
+    params.require(:answer).permit(:body, :author)
   end
 
   def load_question
