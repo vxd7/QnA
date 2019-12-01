@@ -6,8 +6,8 @@ feature 'User can view selected question', %q{
   I'd like to be able to visit the question page and view question with answers
 } do
   given(:user) { create(:user) }
-  given(:question) { create(:question) }
-  given(:answers) { create_list(:answer, 3, question: question) }
+  given!(:question) { create(:question) }
+  given!(:answers) { create_list(:answer, 3, question: question) }
 
   scenario 'Authenticated user visits question page and views question and answers' do
     sign_in(user)
@@ -15,6 +15,8 @@ feature 'User can view selected question', %q{
 
     expect(page).to have_content question.title
     expect(page).to have_content question.body
+
+    expect(page).to have_content 'Answers to this question'
     answers.each { |ans| expect(page).to have_content ans.body }
   end
 
@@ -23,6 +25,8 @@ feature 'User can view selected question', %q{
 
     expect(page).to have_content question.title
     expect(page).to have_content question.body
+
+    expect(page).to have_content 'Answers to this question'
     answers.each { |ans| expect(page).to have_content ans.body }
   end
 end
