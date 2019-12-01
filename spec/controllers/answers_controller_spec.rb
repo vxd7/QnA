@@ -67,4 +67,28 @@ RSpec.describe AnswersController, type: :controller do
       expect(response).to render_template :show
     end
   end
+
+  describe 'DELETE #destroy' do
+    before { login(user) }
+    let!(:answer) { create(:answer) }
+
+    context 'of the answer by the author of the answer' do
+      before { login(answer.author) }
+
+      it 'deletes the answer' do
+        expect { delete :destroy, params: { id: answer } }.to change(Answer, :count).by(-1)
+      end
+    end
+
+    context 'of the answer not owned by the current user' do
+      it 'forbids the deletion of the answer not owned by the user' do
+        expect { delete :destroy, params: { id: answer } }.to_not change(Answer, :count)
+      end
+    end
+
+    it "redirects to answer's question page" do
+      delete :destroy, params: { id: question }
+      expect(response).to redirect_to question_path answer.question
+    end
+  end
 end
