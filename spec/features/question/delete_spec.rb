@@ -6,10 +6,10 @@ feature 'An author of the question can delete their question', %q{
   I'd like to be able to delete my question
 } do
   background { visit questions_path }
+  given(:questions) { create_list(:question, 2) }
 
   describe 'Authenticated user' do
-    given(:questions) { create_list(:question, 2) }
-    before { sign_in(questions[0].user) }
+    before { sign_in(questions[0].author) }
 
     scenario 'deletes their question' do
       visit question_path questions[0]
@@ -26,5 +26,10 @@ feature 'An author of the question can delete their question', %q{
     end
   end
 
-  scenario 'Unauthenticated user tries to delete a question'
+  scenario 'Unauthenticated user tries to delete a question' do
+    visit question_path questions[0]
+    click_on 'Delete'
+
+    expect(page).to have_content I18n.t('.devise.failure.unauthenticated')
+  end
 end
