@@ -124,8 +124,18 @@ RSpec.describe QuestionsController, type: :controller do
     before { login(user) }
     let!(:question) { create(:question) }
 
-    it 'deletes the question' do
-      expect { delete :destroy, params: { id: question } }.to change(Question, :count).by(-1)
+    context 'of the question by the author of the question' do
+      before { login(question.author) }
+
+      it 'deletes the question' do
+        expect { delete :destroy, params: { id: question } }.to change(Question, :count).by(-1)
+      end
+    end
+
+    context 'of the question not owned by the current user' do
+      it 'forbids the deletion of the question not owned by the user' do
+        expect { delete :destroy, params: { id: question } }.to_not change(Question, :count)
+      end
     end
 
     it 'redirects to index' do
