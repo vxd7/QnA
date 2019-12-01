@@ -87,7 +87,7 @@ RSpec.describe AnswersController, type: :controller do
     end
 
     it "redirects to answer's question page" do
-      delete :destroy, params: { id: question }
+      delete :destroy, params: { id: answer }
       expect(response).to redirect_to question_path answer.question
     end
   end
