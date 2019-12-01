@@ -1,0 +1,8 @@
+div
+  div QnA
+  - if user_signed_in?
+    div
+      = link_to 'Log out', destroy_user_session_path, method: :delete
+  - else
+    div
+      a href=new_user_session_path Log in
