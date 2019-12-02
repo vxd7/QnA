@@ -5,5 +5,5 @@ div
       = link_to 'Log out', destroy_user_session_path, method: :delete
   - else
     div
-      a href=new_user_session_path Log in
-      a href=new_user_registration_path Register an account
+      = link_to 'Log in', new_user_session_path 
+      = link_to 'Register an account', new_user_registration_path 
