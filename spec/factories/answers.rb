@@ -8,4 +8,10 @@ FactoryBot.define do
   trait :invalid do
     body { nil }
   end
+
+  trait :different do
+    sequence :body do |n|
+      "AnswerBody#{n}"
+    end
+  end
 end
