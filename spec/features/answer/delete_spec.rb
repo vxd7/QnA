@@ -5,7 +5,8 @@ feature 'An author of the answer can delete their answer', %q{
   As an authenticated user
   I'd like to be able to delete my answer
 } do
-  given(:answers) { create_list(:answer, 2) }
+  given!(:question) { create(:question) }
+  given(:answers) { create_list(:answer, 2, :different, question: question) }
 
   describe 'Authenticated user' do
     before { sign_in(answers[0].author) }
