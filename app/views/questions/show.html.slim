@@ -5,8 +5,7 @@ h3 Avaliable actions
 = render 'actions', question: @question
 
 h2= 'Answers to this question'
-- @question.answers.each do |ans|
-  = render 'shared/answer', answer: ans
+= render @question.answers
 
 h2= 'Create an answer'
 = render 'answers/form', question: @question, answer: @question.answers.new
