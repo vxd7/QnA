@@ -19,16 +19,12 @@ feature 'An author of the answer can delete their answer', %q{
 
     scenario "tries to delete someone else's answer" do
       visit answer_path answers[1]
-      click_on 'Delete'
-
-      expect(page).to have_content 'Cannot delete the answer'
+      expect(page).to_not have_link 'Delete'
     end
   end
 
   scenario 'Unauthenticated user tries to delete an answer' do
     visit answer_path answers[0]
-    click_on 'Delete'
-
-    expect(page).to have_content I18n.t('.devise.failure.unauthenticated')
+    expect(page).to_not have_link 'Delete'
   end
 end
