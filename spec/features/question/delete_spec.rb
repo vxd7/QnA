@@ -20,16 +20,12 @@ feature 'An author of the question can delete their question', %q{
 
     scenario "tries to delete someone else's question" do
       visit question_path questions[1]
-      click_on 'Delete'
-
-      expect(page).to have_content 'Cannot delete the question'
+      expect(page).to_not have_link 'Delete'
     end
   end
 
   scenario 'Unauthenticated user tries to delete a question' do
     visit question_path questions[0]
-    click_on 'Delete'
-
-    expect(page).to have_content I18n.t('.devise.failure.unauthenticated')
+    expect(page).to_not have_link 'Delete'
   end
 end
