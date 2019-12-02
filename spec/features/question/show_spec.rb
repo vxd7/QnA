@@ -7,7 +7,7 @@ feature 'User can view selected question', %q{
 } do
   given(:user) { create(:user) }
   given!(:question) { create(:question) }
-  given!(:answers) { create_list(:answer, 3, question: question) }
+  given!(:answers) { create_list(:answer, 3, :different, question: question) }
 
   scenario 'Authenticated user visits question page and views question and answers' do
     sign_in(user)
