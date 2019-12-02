@@ -64,8 +64,13 @@ RSpec.describe QuestionsController, type: :controller do
         expect { post :create, params: { question: attributes_for(:question) } }.to change(Question, :count).by(1)
       end
 
+      it 'assigns correct author for the question' do
+        post :create, params: { question: attributes_for(:question) }
+        expect(user.author_of?(assigns(:question))).to be true
+      end
+
       it 'redirects to show view' do
-        post :create, params: { question: attributes_for(:question) } 
+        post :create, params: { question: attributes_for(:question) }
         expect(response).to redirect_to assigns(:question)
       end
     end
@@ -75,7 +80,7 @@ RSpec.describe QuestionsController, type: :controller do
       end
 
       it 're-renders new view' do
-        post :create, params: { question: attributes_for(:question, :invalid) } 
+        post :create, params: { question: attributes_for(:question, :invalid) }
         expect(response).to render_template :new
       end
     end
