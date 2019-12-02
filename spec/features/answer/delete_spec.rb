@@ -15,6 +15,7 @@ feature 'An author of the answer can delete their answer', %q{
       click_on 'Delete'
 
       expect(page).to have_content 'Answer was successfully deleted'
+      expect(page).to_not have_content answers[0].body
     end
 
     scenario "tries to delete someone else's answer" do
