@@ -6,7 +6,7 @@ feature 'An author of the question can delete their question', %q{
   I'd like to be able to delete my question
 } do
   background { visit questions_path }
-  given(:questions) { create_list(:question, 2) }
+  given(:questions) { create_list(:question, 2, :different) }
 
   describe 'Authenticated user' do
     before { sign_in(questions[0].author) }
@@ -16,6 +16,8 @@ feature 'An author of the question can delete their question', %q{
       click_on 'Delete'
 
       expect(page).to have_content 'Question was successfully deleted'
+      expect(page).to_not have_content questions[0].title
+      expect(page).to_not have_content questions[0].body
     end
 
     scenario "tries to delete someone else's question" do
