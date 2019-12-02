@@ -8,6 +8,5 @@ RSpec.describe Answer, type: :model do
 
   describe 'attribute validations' do
     it { should validate_presence_of :body }
-    it { should validate_presence_of :author }
   end
 end
