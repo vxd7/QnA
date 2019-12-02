@@ -32,6 +32,11 @@ RSpec.describe AnswersController, type: :controller do
         expect(assigns(:question)).to eq question
       end
 
+      it 'assigns correct author for the question' do
+        post :create, params: { answer: attributes_for(:answer), question_id: question }
+        expect(user.author_of?(assigns(:answer))).to be true
+      end
+
       it 'saves new answer in the DB' do
         expect { post :create, params: { answer: attributes_for(:answer), question_id: question } }.to change(question.answers, :count).by(1)
       end
