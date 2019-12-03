@@ -1,0 +1,7 @@
+b= question.title
+p= question.body
+
+h3 Avaliable actions
+div
+  - if current_user&.author_of?(question)
+    = link_to 'Delete', question_path(question), method: :delete, data: { confirm: 'Are you sure?' }

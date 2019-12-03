@@ -1,11 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
+  let(:user) { create(:user) }
   let(:question) { create(:question) }
 
   describe 'GET #new' do
     # Answer is a dependent model of Question model
     # so to create it we need question id
+    before { login(user) }
     before { get :new, params: { question_id: question } }
 
     it 'should assign question to @question' do
@@ -22,10 +24,17 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'POST #create' do
+    before { login(user) }
+
     context 'with valid attributes' do
       it 'assigns correct question (for this answer) to @question' do
         post :create, params: { answer: attributes_for(:answer), question_id: question }
         expect(assigns(:question)).to eq question
+      end
+
+      it 'assigns correct author for the answer' do
+        post :create, params: { answer: attributes_for(:answer), question_id: question }
+        expect(user).to be_author_of(assigns(:answer))
       end
 
       it 'saves new answer in the DB' do
@@ -61,6 +70,30 @@ RSpec.describe AnswersController, type: :controller do
 
     it 'renders show view' do
       expect(response).to render_template :show
+    end
+  end
+
+  describe 'DELETE #destroy' do
+    before { login(user) }
+    let!(:answer) { create(:answer) }
+
+    context 'of the answer by the author of the answer' do
+      before { login(answer.author) }
+
+      it 'deletes the answer' do
+        expect { delete :destroy, params: { id: answer } }.to change(Answer, :count).by(-1)
+      end
+    end
+
+    context 'of the answer not owned by the current user' do
+      it 'forbids the deletion of the answer not owned by the user' do
+        expect { delete :destroy, params: { id: answer } }.to_not change(Answer, :count)
+      end
+    end
+
+    it "redirects to answer's question page" do
+      delete :destroy, params: { id: answer }
+      expect(response).to redirect_to question_path answer.question
     end
   end
 end
