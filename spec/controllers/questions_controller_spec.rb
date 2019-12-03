@@ -66,7 +66,7 @@ RSpec.describe QuestionsController, type: :controller do
 
       it 'assigns correct author for the question' do
         post :create, params: { question: attributes_for(:question) }
-        expect(user.author_of?(assigns(:question))).to be true
+        expect(user).to be_author_of(assigns(:question))
       end
 
       it 'redirects to show view' do
