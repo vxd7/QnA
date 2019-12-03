@@ -34,7 +34,7 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'assigns correct author for the answer' do
         post :create, params: { answer: attributes_for(:answer), question_id: question }
-        expect(user.author_of?(assigns(:answer))).to be true
+        expect(user).to be_author_of(assigns(:answer))
       end
 
       it 'saves new answer in the DB' do
