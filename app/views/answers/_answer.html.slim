@@ -4,3 +4,9 @@ h3 Avaliable actions
 div
   - if current_user&.author_of?(answer)
     = link_to 'Delete', answer_path(answer), method: :delete, data: { confirm: 'Are you sure?' }
+    = link_to 'Edit'
+
+= form_with model: answer do |f|
+  = f.label :body, 'Your answer'
+  = f.text_area :body
+  = f.submit 'Save'

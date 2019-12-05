@@ -96,4 +96,24 @@ RSpec.describe AnswersController, type: :controller do
       expect(response).to redirect_to question_path answer.question
     end
   end
+
+  describe 'PATCH #update' do
+    let(:answer) { create(:answer, question: question) }
+
+    context 'with valid attributes' do
+      it 'changes the answer attributes' do
+        patch :update, params: { id: answer, answer: { body: 'new body' } }, format: :js
+        answer.reload
+        expect(answer.body).to eq 'new body'
+      end
+
+      it 'renders update view' do
+        patch :update, params: { id: answer, answer: { body: 'new body' } }, format: :js
+        expect(response).to render_template :update
+      end
+    end
+
+    context 'with invalid attributes' do
+    end
+  end
 end
