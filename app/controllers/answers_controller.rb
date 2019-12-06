@@ -1,7 +1,7 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!, except: %i[index show]
   before_action :load_question, only: %i[new create]
-  before_action :load_answer, only: :destroy
+  before_action :load_answer, only: %i[destroy update]
 
   def new
     @answer = @question.answers.new
@@ -11,12 +11,13 @@ class AnswersController < ApplicationController
   def create
     @answer = @question.answers.new(answer_params)
     @answer.author = current_user
+    @answer.save
 
-    if @answer.save
-      redirect_to @answer, notice: 'Your answer was successfully created'
-    else
-      render :new
-    end
+    # if @answer.save
+    #   redirect_to @answer, notice: 'Your answer was successfully created'
+    # else
+    #   render :new
+    # end
   end
 
   def show
@@ -31,6 +32,11 @@ class AnswersController < ApplicationController
     else
       redirect_to question_path(@answer.question), notice: 'Cannot delete the answer'
     end
+  end
+
+  def update
+    @answer.update(answer_params)
+    @question = @answer.question
   end
 
   private
