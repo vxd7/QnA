@@ -1,12 +1,12 @@
-p= answer.body
+div id="answer-#{answer.id}"
+  p= answer.body
 
-h3 Avaliable actions
-div
   - if current_user&.author_of?(answer)
-    = link_to 'Delete', answer_path(answer), method: :delete, data: { confirm: 'Are you sure?' }
-    = link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
+    div
+      = link_to 'Delete', answer_path(answer), method: :delete, data: { confirm: 'Are you sure?' }
+      = link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
 
-= form_with model: answer, class: 'hidden', html: { id: "edit-answer-#{answer.id}" } do |f|
-  = f.label :body, 'Your answer'
-  = f.text_area :body
-  = f.submit 'Save'
+    = form_with model: answer, class: 'hidden', html: { id: "edit-answer-#{answer.id}" } do |f|
+      p= f.label :body, 'Your answer'
+      p= f.text_area :body
+      p= f.submit 'Save'
