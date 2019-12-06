@@ -16,17 +16,17 @@ feature 'User can edit their answer', %q{
   end
 
   describe 'Authenticated user' do
-    scenario 'edits their answer' do
+    scenario 'edits their answer', js: true do
       sign_in(user)
       visit question_path question
 
       click_on 'Edit'
-      within '.body' do
+      within '.answers' do
         fill_in 'Your answer', with: 'edited answer'
         click_on 'Save'
 
-        expect(page).to_not have_content answer_body
-        expect(page).to have_content 'edited_answer'
+        expect(page).to_not have_content answer.body
+        expect(page).to have_content 'edited answer'
         expect(page).to_not have_selector 'textarea'
       end
 
