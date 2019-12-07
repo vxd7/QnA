@@ -29,7 +29,7 @@ feature 'User can edit their question', %q{
       within find(id: "question-#{question.id}") do
         click_on 'Edit'
         fill_in 'Title', with: 'New question title'
-        fill_in 'Body', with: 'New questino body'
+        fill_in 'Body', with: 'New question body'
         click_on 'Save'
 
         expect(page).to_not have_content question.title
@@ -40,7 +40,27 @@ feature 'User can edit their question', %q{
       end
     end
 
-    scenario 'edits their question with errors'
-    scenario "tries to edit someone else's question"
+    scenario 'edits their question with errors', js: true do
+      visit question_path question
+      within find(id: "question-#{question.id}") do
+        click_on 'Edit'
+        fill_in 'Body', with: ''
+        click_on 'Save'
+
+        expect(page).to have_content question.title
+        expect(page).to have_content question.body
+      end
+
+      within '.question-errors' do
+        expect(page).to have_content "Body can't be blank"
+      end
+    end
+
+    scenario "tries to edit someone else's question", js: true do
+      visit question_path another_users_question
+      within find(id: "question-#{another_users_question.id}") do
+        expect(page).to_not have_link 'Edit'
+      end
+    end
   end
 end
