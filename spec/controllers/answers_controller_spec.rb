@@ -81,19 +81,19 @@ RSpec.describe AnswersController, type: :controller do
       before { login(answer.author) }
 
       it 'deletes the answer' do
-        expect { delete :destroy, params: { id: answer } }.to change(Answer, :count).by(-1)
+        expect { delete :destroy, params: { id: answer }, format: :js }.to change(Answer, :count).by(-1)
       end
     end
 
     context 'of the answer not owned by the current user' do
       it 'forbids the deletion of the answer not owned by the user' do
-        expect { delete :destroy, params: { id: answer } }.to_not change(Answer, :count)
+        expect { delete :destroy, params: { id: answer }, format: :js}.to_not change(Answer, :count)
       end
     end
 
-    it "redirects to answer's question page" do
-      delete :destroy, params: { id: answer }
-      expect(response).to redirect_to question_path answer.question
+    it "renders destroy view" do
+      delete :destroy, params: { id: answer }, format: :js
+      expect(response).to render_template :destroy
     end
   end
 
