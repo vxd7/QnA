@@ -12,12 +12,6 @@ class AnswersController < ApplicationController
     @answer = @question.answers.new(answer_params)
     @answer.author = current_user
     @answer.save
-
-    # if @answer.save
-    #   redirect_to @answer, notice: 'Your answer was successfully created'
-    # else
-    #   render :new
-    # end
   end
 
   def show

@@ -5,7 +5,7 @@ div id="answer-#{answer.id}"
     div
       = link_to 'Delete', answer_path(answer), method: :delete, remote: true
       = link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
-  - if current_user&.author_of?(answer.question)
+  - if current_user&.author_of?(answer.question) && !answer.best_answer?
     div
       = link_to 'Mark best', mark_best_answer_path(answer), method: :patch, remote: true
 

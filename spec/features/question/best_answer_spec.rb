@@ -24,6 +24,7 @@ feature 'An author of a question can choose the best answer', %q{
         within find(id: "answer-#{answers[3].id}") do
           click_on 'Mark best'
         end
+
         expect(page).to have_selector '.best-answer'
         within '.best-answer' do
           expect(page).to have_content answers[3].body
