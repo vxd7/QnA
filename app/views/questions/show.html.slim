@@ -1,4 +1,6 @@
 = render @question
+.question-errors
+  = render 'shared/errors', resource: @question
 
 h2= 'Answers to this question'
 .answers
