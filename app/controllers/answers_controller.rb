@@ -28,15 +28,13 @@ class AnswersController < ApplicationController
     # Check if user is authorized to delete the question
     if current_user.author_of?(@answer)
       @answer.destroy
-      redirect_to question_path(@answer.question), notice: 'Answer was successfully deleted'
-    else
-      redirect_to question_path(@answer.question), notice: 'Cannot delete the answer'
     end
   end
 
   def update
-    @answer.update(answer_params)
-    @question = @answer.question
+    if current_user.author_of?(@answer)
+      @answer.update(answer_params)
+    end
   end
 
   private

@@ -3,10 +3,10 @@ div id="answer-#{answer.id}"
 
   - if current_user&.author_of?(answer)
     div
-      = link_to 'Delete', answer_path(answer), method: :delete, data: { confirm: 'Are you sure?' }
+      = link_to 'Delete', answer_path(answer), method: :delete, remote: true, data: { confirm: 'Are you sure?' }
       = link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
 
     = form_with model: answer, class: 'hidden', html: { id: "edit-answer-#{answer.id}" } do |f|
       p= f.label :body, 'Your answer'
-      p= f.text_area :body
+      p= f.text_area :body, value: answer.body
       p= f.submit 'Save'
