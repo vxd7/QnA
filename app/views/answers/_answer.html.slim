@@ -9,7 +9,7 @@ div id="answer-#{answer.id}"
     div
       = link_to 'Mark best', mark_best_answer_path(answer), method: :patch, remote: true
 
-    = form_with model: answer, class: 'hidden', html: { id: "edit-answer-#{answer.id}" } do |f|
-      p= f.label :body, 'Your answer'
-      p= f.text_area :body, value: answer.body
-      p= f.submit 'Save'
+  = form_with model: answer, class: 'hidden', html: { id: "edit-answer-#{answer.id}" } do |f|
+    p= f.label :body, 'Your answer'
+    p= f.text_area :body, value: answer.body
+    p= f.submit 'Save'
