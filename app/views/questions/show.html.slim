@@ -6,5 +6,8 @@ h2= 'Answers to this question'
 
 .answer-errors
   = render 'shared/errors', resource: @question.answers.new
-h2= 'Create an answer'
-= render 'answers/form', question: @question, answer: @question.answers.new
+
+- if user_signed_in?
+  div
+    h2= 'Create an answer'
+    = render 'answers/form', question: @question, answer: @question.answers.new

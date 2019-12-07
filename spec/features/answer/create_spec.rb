@@ -30,13 +30,8 @@ feature 'User can create an answer to the question', %q{
     end
   end
 
-  scenario 'Unauthenticated user tries to answer a question' do
+  scenario 'Unauthenticated user tries to answer a question', js: true do
     visit question_path question
-
-    fill_in 'Body', with: 'Test answer body text'
-    click_on 'Answer'
-
-    expect(page).to have_content 'You need to sign in or sign up before continuing.'
-
+    expect(page).to_not have_selector 'new-answer'
   end
 end
