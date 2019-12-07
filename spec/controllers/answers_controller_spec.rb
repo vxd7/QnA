@@ -133,13 +133,13 @@ RSpec.describe AnswersController, type: :controller do
     let!(:answer) { create(:answer, question: question) }
     let!(:another_answer) { create(:answer) }
 
-    context 'of the answer by the author of the question' do
-      before { login(user) }
+    before { login(user) }
 
+    context 'of the answer by the author of the question' do
       it 'marks selected answer as the best' do
         patch :mark_best, params: { id: answer }, format: :js
         answer.reload
-        expect(answer.best_answer).to be true
+        expect(answer).to be_best_answer
       end
 
       it 'renders mark_best view' do
@@ -149,8 +149,15 @@ RSpec.describe AnswersController, type: :controller do
     end
 
     context 'of the answer by another user' do
-      it 'does not mark the answer as the best'
-      it 'renders mark_best view'
+      it 'does not mark the answer as the best' do
+        patch :mark_best, params: { id: another_answer }, format: :js
+        expect(another_answer).to_not be_best_answer
+      end
+
+      it 'renders mark_best view' do
+        patch :mark_best, params: { id: another_answer }, format: :js
+        expect(response).to render_template :mark_best
+      end
     end
   end
 end

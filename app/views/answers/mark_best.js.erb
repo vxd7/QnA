@@ -1,0 +1,3 @@
+$('.answers').append($('.best-answer').html())
+$(".answers > #answer-<%= @answer.id %>").remove();
+$('.best-answer').html('<%= j render @answer %>');

@@ -4,7 +4,9 @@
 
 h2= 'Answers to this question'
 .answers
-  = render @question.answers
+  .best-answer
+    = render @question.best_answer if @question.best_answer
+  = render @question.answers.where(best_answer: false)
 
 .answer-errors
   = render 'shared/errors', resource: @question.answers.new
