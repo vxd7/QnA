@@ -98,8 +98,8 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'PATCH #update' do
-    let(:answer) { create(:answer, question: question) }
-    before { login(user) }
+    let!(:answer) { create(:answer, question: question) }
+    before { login(answer.author) }
 
     context 'with valid attributes' do
       it 'changes the answer attributes' do
