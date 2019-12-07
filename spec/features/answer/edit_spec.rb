@@ -25,8 +25,8 @@ feature 'User can edit their answer', %q{
     end
 
     scenario 'edits their answer', js: true do
-      click_on 'Edit'
-      within '.answers' do
+      within find(id: "answer-#{answer.id}") do
+        click_on 'Edit'
         fill_in 'Your answer', with: 'edited answer'
         click_on 'Save'
 
