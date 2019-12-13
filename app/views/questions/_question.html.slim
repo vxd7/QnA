@@ -1,7 +1,14 @@
-b= question.title
-p= question.body
-
-h3 Avaliable actions
-div
+div id="question-#{question.id}"
+  b= question.title
+  p= question.body
   - if current_user&.author_of?(question)
-    = link_to 'Delete', question_path(question), method: :delete, data: { confirm: 'Are you sure?' }
+    div
+      = link_to 'Delete', question_path(question), method: :delete, data: { confirm: 'Are you sure?' }
+      = link_to 'Edit', '#', class: 'edit-question-link', data: { question_id: question.id }
+
+    = form_with model: question, class: 'hidden', html: { id: "edit-question-#{question.id}" } do |f|
+      p= f.label :title
+      p= f.text_field :title
+      p= f.label :body
+      p= f.text_area :body
+      p= f.submit 'Save'

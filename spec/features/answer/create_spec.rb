@@ -15,27 +15,23 @@ feature 'User can create an answer to the question', %q{
       visit question_path question
     end
 
-    scenario 'answers a question' do
+    scenario 'answers a question', js: true do
       fill_in 'Body', with: 'Test answer body text'
       click_on 'Answer'
 
-      expect(page).to have_content 'Your answer was successfully created'
-      expect(page).to have_content 'Test answer body text'
+      within('.answers') do
+        expect(page).to have_content 'Test answer body text'
+      end
     end
 
-    scenario 'answers a question incorrectly' do
+    scenario 'answers a question incorrectly', js: true do
       click_on 'Answer'
       expect(page).to have_content "Body can't be blank"
     end
   end
 
-  scenario 'Unauthenticated user tries to answer a question' do
+  scenario 'Unauthenticated user tries to answer a question', js: true do
     visit question_path question
-
-    fill_in 'Body', with: 'Test answer body text'
-    click_on 'Answer'
-
-    expect(page).to have_content 'You need to sign in or sign up before continuing.'
-
+    expect(page).to_not have_selector 'new-answer'
   end
 end

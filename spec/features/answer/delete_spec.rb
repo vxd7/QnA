@@ -11,22 +11,28 @@ feature 'An author of the answer can delete their answer', %q{
   describe 'Authenticated user' do
     before { sign_in(answers[0].author) }
 
-    scenario 'deletes their answer' do
-      visit answer_path answers[0]
-      click_on 'Delete'
+    scenario 'deletes their answer', js: true do
+      visit question_path question
 
-      expect(page).to have_content 'Answer was successfully deleted'
+      within find(id: "answer-#{answers[0].id}") do
+        click_on 'Delete'
+      end
+
+      expect(page).to_not have_selector "#answer-#{answers[0].id}"
       expect(page).to_not have_content answers[0].body
     end
 
-    scenario "tries to delete someone else's answer" do
-      visit answer_path answers[1]
-      expect(page).to_not have_link 'Delete'
+    scenario "tries to delete someone else's answer", js: true do
+      visit question_path question
+
+      within find(id: "answer-#{answers[1].id}") do
+        expect(page).to_not have_link 'Delete'
+      end
     end
   end
 
-  scenario 'Unauthenticated user tries to delete an answer' do
-    visit answer_path answers[0]
+  scenario 'Unauthenticated user tries to delete an answer', js: true do
+    visit question_path question
     expect(page).to_not have_link 'Delete'
   end
 end

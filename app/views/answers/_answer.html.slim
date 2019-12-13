@@ -1,6 +1,15 @@
-p= answer.body
+div id="answer-#{answer.id}"
+  p= answer.body
 
-h3 Avaliable actions
-div
   - if current_user&.author_of?(answer)
-    = link_to 'Delete', answer_path(answer), method: :delete, data: { confirm: 'Are you sure?' }
+    div
+      = link_to 'Delete', answer_path(answer), method: :delete, remote: true
+      = link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
+  - if current_user&.author_of?(answer.question) && !answer.best_answer?
+    div
+      = link_to 'Mark best', mark_best_answer_path(answer), method: :patch, remote: true
+
+  = form_with model: answer, class: 'hidden', html: { id: "edit-answer-#{answer.id}" }, method: :patch do |f|
+    p= f.label :body, 'Your answer'
+    p= f.text_area :body, value: answer.body
+    p= f.submit 'Save'

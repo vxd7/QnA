@@ -1,7 +1,17 @@
 = render @question
+.question-errors
+  = render 'shared/errors', resource: @question
 
 h2= 'Answers to this question'
-= render @question.answers
+.answers
+  .best-answer
+    = render @question.best_answer if @question.best_answer
+  = render @question.answers.where(best_answer: false)
 
-h2= 'Create an answer'
-= render 'answers/form', question: @question, answer: @question.answers.new
+.answer-errors
+  = render 'shared/errors', resource: @question.answers.new
+
+- if user_signed_in?
+  div
+    h2= 'Create an answer'
+    = render 'answers/form', question: @question, answer: @question.answers.new

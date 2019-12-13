@@ -1,7 +1,7 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!, except: %i[index show]
   before_action :load_question, only: %i[new create]
-  before_action :load_answer, only: :destroy
+  before_action :load_answer, only: %i[destroy update mark_best]
 
   def new
     @answer = @question.answers.new
@@ -11,12 +11,7 @@ class AnswersController < ApplicationController
   def create
     @answer = @question.answers.new(answer_params)
     @answer.author = current_user
-
-    if @answer.save
-      redirect_to @answer, notice: 'Your answer was successfully created'
-    else
-      render :new
-    end
+    @answer.save
   end
 
   def show
@@ -27,9 +22,18 @@ class AnswersController < ApplicationController
     # Check if user is authorized to delete the question
     if current_user.author_of?(@answer)
       @answer.destroy
-      redirect_to question_path(@answer.question), notice: 'Answer was successfully deleted'
-    else
-      redirect_to question_path(@answer.question), notice: 'Cannot delete the answer'
+    end
+  end
+
+  def update
+    if current_user.author_of?(@answer)
+      @answer.update(answer_params)
+    end
+  end
+
+  def mark_best
+    if current_user.author_of?(@answer.question)
+      @answer.mark_best
     end
   end
 
