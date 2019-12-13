@@ -22,7 +22,7 @@ RSpec.describe Answer, type: :model do
     end
   end
 
-  describe '#mark_best_answer' do
+  describe '#mark_best' do
     let!(:user) { create(:user) }
     let!(:question) { create(:question, author: user) }
     let!(:answer1) { create(:answer, best_answer: true, question: question) }
@@ -30,7 +30,7 @@ RSpec.describe Answer, type: :model do
     let!(:answer3) { create(:answer, best_answer: false, question: question) }
 
     before do
-      answer2.mark_best_answer
+      answer2.mark_best
       answer1.reload
       answer2.reload
       answer3.reload

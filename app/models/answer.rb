@@ -7,7 +7,7 @@ class Answer < ApplicationRecord
   # but multiple NOT BEST answers for the given question
   validates :best_answer, uniqueness: { scope: :question_id }, if: :best_answer?
 
-  def mark_best_answer
+  def mark_best
     # Remove best answer flag from previous best answer
     question.answers.find_by(best_answer: true)&.update_attribute(:best_answer, false)
     self.best_answer = true
