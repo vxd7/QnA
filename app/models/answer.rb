@@ -8,8 +8,10 @@ class Answer < ApplicationRecord
   validates :best_answer, uniqueness: { scope: :question_id }, if: :best_answer?
 
   def mark_best
-    # Remove best answer flag from previous best answer
-    question.answers.find_by(best_answer: true)&.update_attribute(:best_answer, false)
-    self.update(best_answer: true)
+    transaction do
+      # Remove best answer flag from previous best answer
+      question.best_answer&.update!(best_answer: false)
+      self.update!(best_answer: true)
+    end
   end
 end
