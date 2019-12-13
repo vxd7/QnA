@@ -10,7 +10,6 @@ class Answer < ApplicationRecord
   def mark_best
     # Remove best answer flag from previous best answer
     question.answers.find_by(best_answer: true)&.update_attribute(:best_answer, false)
-    self.best_answer = true
-    save
+    self.update(best_answer: true)
   end
 end
