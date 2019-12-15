@@ -3,8 +3,8 @@ div id="question-#{question.id}"
   p= question.body
 
   - if question.files.attached?
-    - question.files.each do |file|
-      p= link_to file.filename.to_s, url_for(file)
+    div id="question-#{question.id}-files"
+      = render 'shared/fileslist', resource: question
 
   - if current_user&.author_of?(question)
     div
@@ -21,4 +21,10 @@ div id="question-#{question.id}"
       p
         = f.label :files
         = f.file_field :files, multiple: true
+
+        / Workaround to not to remove previous attachments
+        / when adding new attachments
+        /- if question.files.attached?
+        /  - question.files.each do |file|
+        /    = f.hidden_field :files, multiple: true, value: file.signed_id
       p= f.submit 'Save'

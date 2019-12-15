@@ -42,6 +42,13 @@ class QuestionsController < ApplicationController
     end
   end
 
+  def destroy_attachment
+    @attachment = ActiveStorage::Blob.find_signed(params[:id])
+    if current_user.author_of?(@attachment.record)
+      @attachment.purge
+    end
+  end
+
   private
 
   def load_question

@@ -19,6 +19,9 @@ feature 'User can edit their answer', %q{
     given!(:another_user) { create(:user) }
     given!(:another_users_answer) { create(:answer, question: question, author: another_user, body: 'Another user answer') }
 
+    given!(:answer_with_attachments) { create(:answer, :with_files, question: question, author: user) }
+    given!(:another_users_answer_with_attachments) { create(:answer, :with_files, question: question, author: another_user) }
+
     before do
       sign_in(user)
       visit question_path question
@@ -48,8 +51,26 @@ feature 'User can edit their answer', %q{
       end
     end
 
+    scenario 'deletes file while editing the answer', js: true do
+      within find(id: "answer-#{answer_with_attachments.id}-file-#{answer_with_attachments.files.first.id}") do
+        click_on 'Delete'
+      end
+
+      within find(id: "answer-#{answer_with_attachments.id}-files") do
+        expect(page).to_not have_content answer_with_attachments.files.first.filename.to_s
+      end
+    end
+
+    scenario "tries to delete someone else's file", js: true do
+      within find(id: "answer-#{another_users_answer_with_attachments.id}-file-#{another_users_answer_with_attachments.files.first.id}") do
+        expect(page).to_not have_link 'Delete'
+      end
+    end
+
     scenario 'edits their answer with errors', js: true do
-      click_on 'Edit'
+      within find(id: "answer-#{answer.id}") do
+        click_on 'Edit'
+      end
 
       within '.answers' do
         fill_in 'Your answer', with: ''

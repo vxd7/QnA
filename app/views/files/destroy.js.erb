@@ -1,0 +1,1 @@
+$("#<%= @resource.class.name.downcase %>-<%= @resource.id %>-files").html("<%= j render 'shared/fileslist', resource: @resource %>")

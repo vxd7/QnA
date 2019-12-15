@@ -20,6 +20,9 @@ feature 'User can edit their question', %q{
     given!(:another_user) { create(:user) }
     given!(:another_users_question) { create(:question, author: another_user, body: 'Another user question') }
 
+    given!(:question_with_files) { create(:question, :with_files, author: user) }
+    given!(:another_users_question_with_files) { create(:question, :with_files, author: another_user) }
+
     before do
       sign_in(user)
     end
@@ -49,6 +52,35 @@ feature 'User can edit their question', %q{
 
         expect(page).to have_link 'rails_helper.rb'
         expect(page).to have_link 'spec_helper.rb'
+      end
+    end
+
+    # scenario 'attaches files to the question with existing files', js: true do
+    #   visit question_path question_with_files
+    #   within find(id: "question-#{question_with_files.id}") do
+    #     click_on 'Edit'
+    #     attach_file 'File', ["#{Rails.root}/spec/models/answer_spec.rb", "#{Rails.root}/spec/models/question_spec.rb"]
+    #     click_on 'Save'
+
+    #     expect(page).to have_link 'rails_helper.rb'
+    #     expect(page).to have_link 'spec_helper.rb'
+    #     expect(page).to have_link 'answer_spec.rb'
+    #     expect(page).to have_link 'question_spec.rb'
+    #   end
+    # end
+
+    scenario 'deletes file while editing the question', js: true do
+      visit question_path question_with_files
+      within find(id: "question-#{question_with_files.id}-file-#{question_with_files.files.first.id}") do
+        click_on 'Delete'
+      end
+      expect(page).to_not have_content question_with_files.files.first.filename.to_s
+    end
+
+    scenario "tries to delete someone else's file", js: true do
+      visit question_path another_users_question_with_files 
+      within find(id: "question-#{another_users_question_with_files.id}-file-#{another_users_question_with_files.files.first.id}") do
+        expect(page).to_not have_link 'Delete'
       end
     end
 
