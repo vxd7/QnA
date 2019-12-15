@@ -51,6 +51,19 @@ feature 'User can edit their answer', %q{
       end
     end
 
+    scenario 'attaches files to the answer with existing files', js: true do
+      within find(id: "answer-#{answer_with_attachments.id}") do
+        click_on 'Edit'
+        attach_file 'File', ["#{Rails.root}/spec/models/answer_spec.rb", "#{Rails.root}/spec/models/question_spec.rb"]
+        click_on 'Save'
+
+        expect(page).to have_link 'rails_helper.rb'
+        expect(page).to have_link 'spec_helper.rb'
+        expect(page).to have_link 'answer_spec.rb'
+        expect(page).to have_link 'question_spec.rb'
+      end
+    end
+
     scenario 'deletes file while editing the answer', js: true do
       within find(id: "answer-#{answer_with_attachments.id}-file-#{answer_with_attachments.files.first.id}") do
         click_on 'Delete'

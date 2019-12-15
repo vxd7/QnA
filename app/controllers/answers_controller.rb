@@ -27,7 +27,10 @@ class AnswersController < ApplicationController
 
   def update
     if current_user.author_of?(@answer)
-      @answer.update(answer_params)
+      # Workaround for rails not to purge existing files
+      # when adding new ones through 'Edit'
+      @answer.files.attach(answer_params[:files])
+      @answer.update(answer_params.except(:files))
     end
   end
 

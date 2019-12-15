@@ -55,19 +55,19 @@ feature 'User can edit their question', %q{
       end
     end
 
-    # scenario 'attaches files to the question with existing files', js: true do
-    #   visit question_path question_with_files
-    #   within find(id: "question-#{question_with_files.id}") do
-    #     click_on 'Edit'
-    #     attach_file 'File', ["#{Rails.root}/spec/models/answer_spec.rb", "#{Rails.root}/spec/models/question_spec.rb"]
-    #     click_on 'Save'
+    scenario 'attaches files to the question with existing files', js: true do
+      visit question_path question_with_files
+      within find(id: "question-#{question_with_files.id}") do
+        click_on 'Edit'
+        attach_file 'File', ["#{Rails.root}/spec/models/answer_spec.rb", "#{Rails.root}/spec/models/question_spec.rb"]
+        click_on 'Save'
 
-    #     expect(page).to have_link 'rails_helper.rb'
-    #     expect(page).to have_link 'spec_helper.rb'
-    #     expect(page).to have_link 'answer_spec.rb'
-    #     expect(page).to have_link 'question_spec.rb'
-    #   end
-    # end
+        expect(page).to have_link 'rails_helper.rb'
+        expect(page).to have_link 'spec_helper.rb'
+        expect(page).to have_link 'answer_spec.rb'
+        expect(page).to have_link 'question_spec.rb'
+      end
+    end
 
     scenario 'deletes file while editing the question', js: true do
       visit question_path question_with_files

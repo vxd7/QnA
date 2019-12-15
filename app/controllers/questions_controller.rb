@@ -28,7 +28,10 @@ class QuestionsController < ApplicationController
 
   def update
     if current_user.author_of?(@question)
-      @question.update(question_params)
+      # Workaround for rails not to purge existing files
+      # when adding new ones through 'Edit'
+      @question.files.attach(question_params[:files])
+      @question.update(question_params.except(:files))
     end
   end
 
@@ -39,13 +42,6 @@ class QuestionsController < ApplicationController
       redirect_to questions_path, notice: 'Question was successfully deleted'
     else
       redirect_to questions_path, notice: 'Cannot delete the question'
-    end
-  end
-
-  def destroy_attachment
-    @attachment = ActiveStorage::Blob.find_signed(params[:id])
-    if current_user.author_of?(@attachment.record)
-      @attachment.purge
     end
   end
 
