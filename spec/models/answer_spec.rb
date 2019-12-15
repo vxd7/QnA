@@ -20,6 +20,10 @@ RSpec.describe Answer, type: :model do
       let!(:answer) { create(:answer, best_answer: false) }
       it { should_not validate_uniqueness_of(:best_answer).scoped_to(:question_id)}
     end
+
+    it 'have many attached files' do
+      expect(Question.new.files).to be_an_instance_of(ActiveStorage::Attached::Many)
+    end
   end
 
   describe '#mark_best' do
