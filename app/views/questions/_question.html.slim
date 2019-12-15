@@ -20,11 +20,5 @@ div id="question-#{question.id}"
         = f.text_area :body
       p
         = f.label :files
-        = f.file_field :files, multiple: true
-
-        / Workaround to not to remove previous attachments
-        / when adding new attachments
-        /- if question.files.attached?
-        /  - question.files.each do |file|
-        /    = f.hidden_field :files, multiple: true, value: file.signed_id
+        = f.file_field :files, multiple: true, direct_upload: true
       p= f.submit 'Save'

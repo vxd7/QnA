@@ -102,6 +102,9 @@ RSpec.describe AnswersController, type: :controller do
     before { login(answer.author) }
 
     context 'with valid attributes' do
+      let!(:file1) { Rack::Test::UploadedFile.new("#{Rails.root}/spec/rails_helper.rb") }
+      let!(:file2) { Rack::Test::UploadedFile.new("#{Rails.root}/spec/spec_helper.rb") }
+
       it 'changes the answer attributes' do
         patch :update, params: { id: answer, answer: { body: 'new body' } }, format: :js
         answer.reload
@@ -111,6 +114,12 @@ RSpec.describe AnswersController, type: :controller do
       it 'renders update view' do
         patch :update, params: { id: answer, answer: { body: 'new body' } }, format: :js
         expect(response).to render_template :update
+      end
+
+      it 'attaches files' do
+        patch :update, params: { id: answer, answer: { files: [file1, file2] } }, format: :js
+        answer.reload
+        expect(answer.files.count).to eq 2
       end
     end
 
