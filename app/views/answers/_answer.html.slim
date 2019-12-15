@@ -16,9 +16,7 @@ div id="answer-#{answer.id}"
     p
       = f.label :body, 'Your answer'
       = f.text_area :body, value: answer.body
-
     p
       = f.label :files
       = f.file_field :files, multiple: true
-
     p= f.submit 'Save'

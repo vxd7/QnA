@@ -12,8 +12,13 @@ div id="question-#{question.id}"
       = link_to 'Edit', '#', class: 'edit-question-link', data: { question_id: question.id }
 
     = form_with model: question, class: 'hidden', html: { id: "edit-question-#{question.id}" } do |f|
-      p= f.label :title
-      p= f.text_field :title
-      p= f.label :body
-      p= f.text_area :body
+      p
+        = f.label :title
+        = f.text_field :title
+      p
+        = f.label :body
+        = f.text_area :body
+      p
+        = f.label :files
+        = f.file_field :files, multiple: true
       p= f.submit 'Save'

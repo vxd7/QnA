@@ -36,6 +36,18 @@ feature 'User can edit their answer', %q{
       end
     end
 
+    scenario 'attaches files while editing the answer', js: true do
+      within find(id: "answer-#{answer.id}") do
+        click_on 'Edit'
+        fill_in 'Your answer', with: 'edited answer'
+        attach_file 'File', ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"]
+        click_on 'Save'
+
+        expect(page).to have_link 'rails_helper.rb'
+        expect(page).to have_link 'spec_helper.rb'
+      end
+    end
+
     scenario 'edits their answer with errors', js: true do
       click_on 'Edit'
 
