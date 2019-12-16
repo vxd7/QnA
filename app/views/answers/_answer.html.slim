@@ -1,5 +1,8 @@
 div id="answer-#{answer.id}"
   p= answer.body
+  - if answer.files.attached?
+    div id="answer-#{answer.id}-files"
+      = render 'shared/fileslist', resource: answer
 
   - if current_user&.author_of?(answer)
     div
@@ -10,6 +13,10 @@ div id="answer-#{answer.id}"
       = link_to 'Mark best', mark_best_answer_path(answer), method: :patch, remote: true
 
   = form_with model: answer, class: 'hidden', html: { id: "edit-answer-#{answer.id}" }, method: :patch do |f|
-    p= f.label :body, 'Your answer'
-    p= f.text_area :body, value: answer.body
+    p
+      = f.label :body, 'Your answer'
+      = f.text_area :body, value: answer.body
+    p
+      = f.label :files
+      = f.file_field :files, multiple: true, direct_upload: true
     p= f.submit 'Save'

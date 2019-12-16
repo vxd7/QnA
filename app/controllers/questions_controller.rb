@@ -28,7 +28,10 @@ class QuestionsController < ApplicationController
 
   def update
     if current_user.author_of?(@question)
-      @question.update(question_params)
+      # Workaround for rails not to purge existing files
+      # when adding new ones through 'Edit'
+      @question.files.attach(question_params[:files])
+      @question.update(question_params.except(:files))
     end
   end
 
@@ -45,10 +48,10 @@ class QuestionsController < ApplicationController
   private
 
   def load_question
-    @question = Question.find(params[:id])
+    @question = Question.with_attached_files.find(params[:id])
   end
 
   def question_params
-    params.require(:question).permit(:title, :body)
+    params.require(:question).permit(:title, :body, files: [])
   end
 end

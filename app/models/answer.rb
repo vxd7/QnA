@@ -2,6 +2,8 @@ class Answer < ApplicationRecord
   belongs_to :question
   belongs_to :author, class_name: 'User', foreign_key: :user_id
 
+  has_many_attached :files
+
   validates :body, presence: true
   # We want there to be only one answer marked as best for the given question
   # but multiple NOT BEST answers for the given question

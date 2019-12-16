@@ -17,5 +17,10 @@ FactoryBot.define do
         "QuestionBody#{n}"
       end
     end
+
+    trait :with_files do
+      files { [Rack::Test::UploadedFile.new("#{Rails.root}/spec/rails_helper.rb", 'text/plain'),
+               Rack::Test::UploadedFile.new("#{Rails.root}/spec/spec_helper.rb", 'text/plain')] }
+    end
   end
 end

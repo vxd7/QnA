@@ -7,4 +7,6 @@ Rails.application.routes.draw do
       member { patch :mark_best }
     end
   end
+
+  resources :files, only: :destroy
 end

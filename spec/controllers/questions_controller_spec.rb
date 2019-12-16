@@ -92,6 +92,9 @@ RSpec.describe QuestionsController, type: :controller do
       before { login(question.author) }
 
       context 'with valid attributes' do
+        let!(:file1) { Rack::Test::UploadedFile.new("#{Rails.root}/spec/rails_helper.rb") }
+        let!(:file2) { Rack::Test::UploadedFile.new("#{Rails.root}/spec/spec_helper.rb") }
+
         it 'assigns the requested question to @question' do
           patch :update, params: { id: question, question: attributes_for(:question) }, format: :js
           expect(assigns(:question)).to eq question
@@ -108,6 +111,12 @@ RSpec.describe QuestionsController, type: :controller do
         it 'renders update view' do
           patch :update, params: { id: question, question: attributes_for(:question) }, format: :js
           expect(response).to render_template :update
+        end
+
+        it 'attaches files' do
+          patch :update, params: { id: question, question: { files: [file1, file2] } }, format: :js
+          question.reload
+          expect(question.files.count).to eq 2
         end
       end
 
