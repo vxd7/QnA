@@ -23,6 +23,8 @@ feature 'User can edit their question', %q{
     given!(:question_with_files) { create(:question, :with_files, author: user) }
     given!(:another_users_question_with_files) { create(:question, :with_files, author: another_user) }
 
+    given!(:question_with_link) { create(:question, :with_link, author: user) }
+
     before do
       sign_in(user)
     end
@@ -104,6 +106,50 @@ feature 'User can edit their question', %q{
       visit question_path another_users_question
       within find(id: "question-#{another_users_question.id}") do
         expect(page).to_not have_link 'Edit'
+      end
+    end
+
+    scenario "edits the question's attached link", js: true do
+      visit question_path question_with_link
+
+      within find(id: "question-#{question_with_link.id}") do
+        click_on 'Edit'
+        within '.nested-fields' do
+          fill_in 'Link name', with: 'Edited link name'
+          fill_in 'Url', with: 'http://edited_link_url.com'
+        end
+        click_on 'Save'
+
+        expect(page).to have_link 'Edited link name', href: 'http://edited_link_url.com'
+      end
+    end
+
+    scenario "removes the question's attached link", js: true do
+      visit question_path question_with_link
+
+      within find(id: "question-#{question_with_link.id}") do
+        click_on 'Edit'
+        click_on 'Remove link'
+        click_on 'Save'
+
+        expect(find('.links')).to have_no_link
+      end
+    end
+
+    scenario "adds additional link to the question", js: true do
+      visit question_path question_with_link
+
+      within find(id: "question-#{question_with_link.id}") do
+        click_on 'Edit'
+        click_on 'Add link'
+        within all('.nested-fields').last do
+          fill_in 'Link name', with: 'Additional link'
+          fill_in 'Url', with: 'http://additional_link.com'
+        end
+        click_on 'Save'
+
+        expect(page).to have_link 'Additional link', href: 'http://additional_link.com'
+        expect(page).to have_link question_with_link.links.first.name, href: question_with_link.links.first.url
       end
     end
   end

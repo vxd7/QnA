@@ -22,6 +22,8 @@ feature 'User can edit their answer', %q{
     given!(:answer_with_attachments) { create(:answer, :with_files, question: question, author: user) }
     given!(:another_users_answer_with_attachments) { create(:answer, :with_files, question: question, author: another_user) }
 
+    given!(:answer_with_link) { create(:answer, :with_link, question: question, author: user) }
+
     before do
       sign_in(user)
       visit question_path question
@@ -101,6 +103,44 @@ feature 'User can edit their answer', %q{
         within find(id: "answer-#{another_users_answer.id}") do
           expect(page).to_not have_link 'Edit'
         end
+      end
+    end
+
+    scenario "edits the answer's attached link", js: true do
+      within find(id: "answer-#{answer_with_link.id}") do
+        click_on 'Edit'
+        within '.nested-fields' do
+          fill_in 'Link name', with: 'Edited link name'
+          fill_in 'Url', with: 'http://edited_link_url.com'
+        end
+        click_on 'Save'
+
+        expect(page).to have_link 'Edited link name', href: 'http://edited_link_url.com'
+      end
+    end
+
+    scenario "removes the answer's attached link", js: true do
+      within find(id: "answer-#{answer_with_link.id}") do
+        click_on 'Edit'
+        click_on 'Remove link'
+        click_on 'Save'
+
+        expect(find('.links')).to have_no_link
+      end
+    end
+
+    scenario "adds additional links to the answer", js: true do
+      within find(id: "answer-#{answer_with_link.id}") do
+        click_on 'Edit'
+        click_on 'Add link'
+        within all('.nested-fields').last do
+          fill_in 'Link name', with: 'Additional link'
+          fill_in 'Url', with: 'http://additional_link.com'
+        end
+        click_on 'Save'
+
+        expect(page).to have_link 'Additional link', href: 'http://additional_link.com'
+        expect(page).to have_link answer_with_link.links.first.name, href: answer_with_link.links.first.url
       end
     end
 

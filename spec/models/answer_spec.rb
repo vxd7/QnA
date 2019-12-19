@@ -9,7 +9,7 @@ RSpec.describe Answer, type: :model do
 
   describe 'attribute validations' do
     it { should validate_presence_of :body }
-    it { should accept_nested_attributes_for :links }
+    it { should accept_nested_attributes_for(:links).allow_destroy(true) }
 
     describe 'best answer validation if answer is choosen as best answer' do
       let!(:answer) { create(:answer, best_answer: true) }
