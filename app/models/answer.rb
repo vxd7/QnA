@@ -17,6 +17,7 @@ class Answer < ApplicationRecord
       # Remove best answer flag from previous best answer
       question.best_answer&.update!(best_answer: false)
       self.update!(best_answer: true)
+      question.reward&.update!(user: author)
     end
   end
 end

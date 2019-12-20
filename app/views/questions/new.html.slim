@@ -20,4 +20,15 @@
     .links
       = link_to_add_association 'Add link', f, :links, partial: 'shared/link_fields'
 
+  p Optional reward:
+  p
+    = f.fields_for :reward do |r|
+      p
+        = r.label :name, 'Reward name'
+        = r.text_field :name
+      p
+        = r.label :image, 'Reward image'
+        = r.file_field :image
+
+
   p= f.submit 'Ask'

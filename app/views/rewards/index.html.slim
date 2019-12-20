@@ -1,0 +1,7 @@
+h1 All rewards
+- current_user.rewards.each do |reward|
+  ul
+    p= reward.name
+    p= reward.question.title
+    p
+      img src=url_for(reward.image)

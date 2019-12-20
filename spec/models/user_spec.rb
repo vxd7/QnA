@@ -4,6 +4,7 @@ RSpec.describe User, type: :model do
   describe 'associations' do
     it { should have_many(:questions).dependent(:destroy) }
     it { should have_many(:answers).dependent(:destroy) }
+    it { should have_many(:rewards).dependent(:destroy) }
   end
 
   it { should validate_presence_of :email }

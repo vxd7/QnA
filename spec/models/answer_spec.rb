@@ -35,6 +35,9 @@ RSpec.describe Answer, type: :model do
     let!(:answer2) { create(:answer, best_answer: false, question: question) }
     let!(:answer3) { create(:answer, best_answer: false, question: question) }
 
+    let!(:question_with_reward) { create(:question, :with_reward) }
+    let!(:answer_for_question_with_reward) { create(:answer, question: question_with_reward, author: user) }
+
     before do
       answer2.mark_best
       answer1.reload
@@ -49,6 +52,15 @@ RSpec.describe Answer, type: :model do
     it 'should unset best answer from other answers' do
       expect(answer1).to_not be_best_answer
       expect(answer3).to_not be_best_answer
+    end
+
+    it 'should assign user reward' do
+      answer_for_question_with_reward.mark_best
+
+      question_with_reward.reload
+      answer_for_question_with_reward.reload
+
+      expect(question_with_reward.reward.user).to eq user
     end
   end
 end

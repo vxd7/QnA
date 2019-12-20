@@ -28,5 +28,9 @@ FactoryBot.define do
         create_list(:link, 3, :different, linkable: q)
       end
     end
+
+    trait :with_reward do
+      reward
+    end
   end
 end
