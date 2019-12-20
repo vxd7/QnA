@@ -4,6 +4,12 @@ div id="answer-#{answer.id}"
     div id="answer-#{answer.id}-files"
       = render 'shared/fileslist', resource: answer
 
+  .links
+    p Links:
+    ul
+      - answer.links.each do |link|
+        li=link_to link.name, link.url
+
   - if current_user&.author_of?(answer)
     div
       = link_to 'Delete', answer_path(answer), method: :delete, remote: true
@@ -19,4 +25,11 @@ div id="answer-#{answer.id}"
     p
       = f.label :files
       = f.file_field :files, multiple: true, direct_upload: true
+
+    p Links:
+    p
+      = f.fields_for :links do |link|
+        = render 'shared/link_fields', f: link
+      .links
+        = link_to_add_association 'Add link', f, :links, partial: 'shared/link_fields'
     p= f.submit 'Save'
