@@ -1,0 +1,8 @@
+.rating
+  p= "Rating: #{resource.rating}"
+
+- if user_signed_in? && resource.voteable_by?(current_user)
+  .votes-links
+    p= link_to 'Upvote', polymorphic_path(resource, action: :upvote), method: :post, remote: true
+    p= link_to 'Downvote', polymorphic_path(resource, action: :downvote), method: :post, remote: true
+    p= link_to 'Cancel vote', polymorphic_path(resource, action: :cancel_vote), method: :delete, remote: true

@@ -10,6 +10,7 @@ require("channels")
 require("jquery")
 require("answers")
 require("question")
+require("votes")
 require("cocoon-js")
 
 

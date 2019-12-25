@@ -21,5 +21,14 @@ module Voteable
     def has_votes?
       votes.any?
     end
+
+    def vote_by_user(user)
+      votes.find_by(user: user)
+    end
+
+    def voteable_by?(user)
+      # User can vote if they are NOT an author of the resource and haven't already voted
+      !user.author_of?(self) && vote_by_user(user).nil?
+    end
   end
 end
