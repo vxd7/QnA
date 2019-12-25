@@ -1,7 +1,7 @@
 module Voted
   extend ActiveSupport::Concern
   included do
-    before_action :authenticate_user!
+    before_action :authenticate_user!, only: %i[upvote downvote cancel_vote]
     before_action :find_voted_resource, only: %i[upvote downvote cancel_vote]
 
     def upvote
