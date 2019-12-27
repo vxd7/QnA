@@ -10,6 +10,9 @@ div id="answer-#{answer.id}"
       - answer.links.each do |link|
         li=link_to link.name, link.url
 
+  div id="answer-#{answer.id}-votes"
+    = render 'shared/votes', resource: answer
+
   - if current_user&.author_of?(answer)
     div
       = link_to 'Delete', answer_path(answer), method: :delete, remote: true
