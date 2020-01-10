@@ -24,10 +24,8 @@ consumer.subscriptions.create("AnswersChannel", {
   received(data) {
     // Called when there's incoming data on the websocket for this channel
     if(data['type'] == 'new answer') {
-      console.log('new question', data['answer']);
       this.perform('render_answer', data['answer']);
     } else if (data['type'] == 'rendered answer') {
-      console.log('rendered question', data['answer']);
       $('.answers').append(data['answer']);
     }
   }
