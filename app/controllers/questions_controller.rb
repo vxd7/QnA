@@ -66,7 +66,6 @@ class QuestionsController < ApplicationController
 
   def publish_question
     return if @question.errors.any?
-    logger.info "CUUUUUUUUU >>>>>> #{current_user.id}"
 
     ActionCable.server.broadcast('questions_channel', {type: 'new question', question: @question})
 
