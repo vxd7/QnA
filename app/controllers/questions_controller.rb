@@ -66,14 +66,17 @@ class QuestionsController < ApplicationController
 
   def publish_question
     return if @question.errors.any?
+    logger.info "CUUUUUUUUU >>>>>> #{current_user.id}"
 
-    ActionCable.server.broadcast(
-      'questions_channel',
-      ApplicationController.render_with_signed_in_user(
-        current_user,
-        partial: 'questions/question',
-        locals: { question: @question }
-      )
-    )
+    ActionCable.server.broadcast('questions_channel', {type: 'new question', question: @question})
+
+    # ActionCable.server.broadcast(
+    #   'questions_channel',
+    #   ApplicationController.render_with_signed_in_user(
+    #     current_user,
+    #     partial: 'questions/question',
+    #     locals: { question: @question }
+    #   )
+    # )
   end
 end
