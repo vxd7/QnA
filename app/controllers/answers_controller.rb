@@ -61,14 +61,5 @@ class AnswersController < ApplicationController
     return if @answer.errors.any?
 
     ActionCable.server.broadcast("question-#{@answer.question.id}", {type: 'new answer', answer: @answer})
-
-    # ActionCable.server.broadcast(
-    #   'questions_channel',
-    #   ApplicationController.render_with_signed_in_user(
-    #     current_user,
-    #     partial: 'questions/question',
-    #     locals: { question: @question }
-    #   )
-    # )
   end
 end

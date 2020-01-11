@@ -16,10 +16,8 @@ consumer.subscriptions.create("QuestionsChannel", {
 
     // Called when there's incoming data on the websocket for this channel
     if(data['type'] == 'new question') {
-      //console.log('new question', data['question']);
       this.perform('render_question', data['question']);
     } else if (data['type'] == 'rendered question') {
-      //console.log('rendered question', data['question']);
       $('.questions-list').append(data['question']);
     }
   }
