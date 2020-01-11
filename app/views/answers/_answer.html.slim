@@ -21,18 +21,21 @@ div id="answer-#{answer.id}"
     div
       = link_to 'Mark best', mark_best_answer_path(answer), method: :patch, remote: true
 
-  = form_with model: answer, class: 'hidden', html: { id: "edit-answer-#{answer.id}" }, method: :patch do |f|
-    p
-      = f.label :body, 'Your answer'
-      = f.text_area :body, value: answer.body
-    p
-      = f.label :files
-      = f.file_field :files, multiple: true, direct_upload: true
+  .edit-answer
+    = form_with model: answer, class: 'hidden', html: { id: "edit-answer-#{answer.id}" }, method: :patch do |f|
+      p
+        = f.label :body, 'Your answer'
+        = f.text_area :body, value: answer.body
+      p
+        = f.label :files
+        = f.file_field :files, multiple: true, direct_upload: true
 
-    p Links:
-    p
-      = f.fields_for :links do |link|
-        = render 'shared/link_fields', f: link
-      .links
-        = link_to_add_association 'Add link', f, :links, partial: 'shared/link_fields'
-    p= f.submit 'Save'
+      p Links:
+      p
+        = f.fields_for :links do |link|
+          = render 'shared/link_fields', f: link
+        .links
+          = link_to_add_association 'Add link', f, :links, partial: 'shared/link_fields'
+      p= f.submit 'Save'
+
+  = render 'shared/comments', resource: answer

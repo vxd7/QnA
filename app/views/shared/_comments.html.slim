@@ -1,0 +1,10 @@
+div id='#{resource.class.name.downcase}-#{resource.id}-comments'
+  h4 Comments
+  = render resource.comments, resource: resource
+
+  - if current_user
+    .new-comment
+      = form_for [resource, Comment.new], remote: true do |f|
+        p= f.label :body, 'Comment body'
+        p= f.text_area :body
+        p= f.submit "Leave Comment" 

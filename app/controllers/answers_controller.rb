@@ -4,6 +4,8 @@ class AnswersController < ApplicationController
   before_action :load_question, only: %i[new create]
   before_action :load_answer, only: %i[destroy update mark_best]
 
+  after_action :publish_answer, only: :create
+
   def new
     @answer = @question.answers.new
     @answer.author = current_user
@@ -53,5 +55,11 @@ class AnswersController < ApplicationController
 
   def load_answer
     @answer = Answer.with_attached_files.find(params[:id])
+  end
+
+  def publish_answer
+    return if @answer.errors.any?
+
+    ActionCable.server.broadcast("question-#{@answer.question.id}", {type: 'new answer', answer: @answer})
   end
 end

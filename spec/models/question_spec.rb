@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Question, type: :model do
   it_should_behave_like 'voteable', :question
+  it_should_behave_like 'commentable', :question
 
   describe 'associations' do
     it { should have_many(:answers).dependent(:destroy) }
