@@ -10,10 +10,16 @@ Rails.application.routes.draw do
     end
   end
 
+  concern :commentable do
+    resources :comments, only: :create
+  end
+
   resources :questions do
     concerns :voteable
+    concerns :commentable
     resources :answers, shallow: true do
       concerns :voteable
+      concerns :commentable
       member { patch :mark_best }
     end
   end

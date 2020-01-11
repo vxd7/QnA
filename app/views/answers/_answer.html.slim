@@ -36,3 +36,5 @@ div id="answer-#{answer.id}"
       .links
         = link_to_add_association 'Add link', f, :links, partial: 'shared/link_fields'
     p= f.submit 'Save'
+
+  = render 'shared/comments', resource: answer
