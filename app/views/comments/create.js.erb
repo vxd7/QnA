@@ -1,5 +1,2 @@
 $('.comment-errors').html('<%= render 'shared/errors', resource: @comment %>');
 
-<% if @comment.persisted? %>
-  $("#<%=@commentable.class.name.downcase%>-<%=@commentable.id%>-comments").replaceWith("<%= j render 'shared/comments', resource: @commentable %>")
-<% end %>

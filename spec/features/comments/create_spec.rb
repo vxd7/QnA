@@ -72,7 +72,7 @@ feature 'User can add commentaries to the question or answer', %q{
         end
 
         within find(id: "question-#{question.id}-comments") do
-          expect(page).to have_content 'Test question comment text'
+          expect(page).to have_content 'Test question comment'
         end
       end
 

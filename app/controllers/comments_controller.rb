@@ -23,5 +23,18 @@ class CommentsController < ApplicationController
   end
 
   def publish_comment
+    return if @comment.errors.any?
+
+    # Commentable resource can be question or answer
+    # comments channel are streamed by question
+    # so we want to determine the question id from whatever commentable type there can be
+    commentable_question = if @comment.commentable_type == 'Answer'
+                             # then commentable is an answer
+                             @comment.commentable.question
+                           else
+                             # it is question
+                             @comment.commentable
+                           end
+    ActionCable.server.broadcast("question-#{commentable_question.id}-comments", {type: 'new comment', comment: @comment})
   end
 end
