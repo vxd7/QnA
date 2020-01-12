@@ -5,6 +5,7 @@ class AnswersController < ApplicationController
   before_action :load_answer, only: %i[destroy update mark_best]
 
   after_action :publish_answer, only: :create
+  authorize_resource
 
   def new
     @answer = @question.answers.new

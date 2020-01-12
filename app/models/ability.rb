@@ -27,5 +27,35 @@ class Ability
     guest_abilities
     can :create, [Question, Answer, Comment]
     can :update, [Question, Answer], user_id: user.id
+    can :destroy, [Question, Answer], user_id: user.id
+
+    # Can delete files only if we own the parent resource
+    # which has these attached files
+    can :destroy, ActiveStorage::Attachment do |file|
+      parent_resource = file.record
+      parent_resource.author.id == user.id
+    end
+
+    # Same goes for links too
+    can :destroy, Link do |link|
+      parent_resource = link.linkable
+      parent_resource.author.id == user.id
+    end
+
+    can :upvote, [Question, Answer] do |resource|
+      resource.voteable_by?(user)
+    end
+
+    can :downvote, [Question, Answer] do |resource|
+      resource.voteable_by?(user)
+    end
+
+    can :cancel_vote, [Question, Answer] do |resource|
+      resource.vote_by_user(user)
+    end
+
+    can :mark_best, Answer do |ans|
+      user.author_of?(ans.question)
+    end
   end
 end
