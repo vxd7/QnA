@@ -57,18 +57,20 @@ RSpec.describe QuestionsController, type: :controller do
     end
   end
 
-  describe 'GET #edit' do
-    before { login(user) }
-    before { get :edit, params: { id: question } }
+  # Edit is not needed. We do AJAX update
+  #
+  # describe 'GET #edit' do
+  #   before { login(user) }
+  #   before { get :edit, params: { id: question } }
 
-    it 'assigns the requested question to @question' do
-      expect(assigns(:question)).to eq question
-    end
+  #   it 'assigns the requested question to @question' do
+  #     expect(assigns(:question)).to eq question
+  #   end
 
-    it 'renders edit view' do
-      expect(response).to render_template :edit
-    end
-  end
+  #   it 'renders edit view' do
+  #     expect(response).to render_template :edit
+  #   end
+  # end
 
   describe 'POST #create' do
     before { login(user) }
@@ -161,8 +163,8 @@ RSpec.describe QuestionsController, type: :controller do
         expect(question.body).to eq 'QuestionBody'
       end
 
-      it 'renders update view' do
-        expect(response).to render_template :update
+      it 'responds with 403' do
+        expect(response.status).to eq 403
       end
     end
 
@@ -186,9 +188,9 @@ RSpec.describe QuestionsController, type: :controller do
       end
     end
 
-    it 'redirects to index' do
+    it 'redirects to root path' do
       delete :destroy, params: { id: question }
-      expect(response).to redirect_to questions_path
+      expect(response).to redirect_to root_path
     end
   end
 end
