@@ -1,6 +1,7 @@
 class FilesController < ApplicationController
   before_action :authenticate_user!
   before_action :load_file
+  authorize_resource
 
   def destroy
     @resource = @file.record

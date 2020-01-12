@@ -93,9 +93,9 @@ RSpec.describe AnswersController, type: :controller do
       end
     end
 
-    it "renders destroy view" do
+    it "responds 403" do
       delete :destroy, params: { id: answer }, format: :js
-      expect(response).to render_template :destroy
+      expect(response.status).to eq 403
     end
   end
 
@@ -165,9 +165,9 @@ RSpec.describe AnswersController, type: :controller do
         expect(another_answer).to_not be_best_answer
       end
 
-      it 'renders mark_best view' do
+      it 'responds with 403' do
         patch :mark_best, params: { id: another_answer }, format: :js
-        expect(response).to render_template :mark_best
+        expect(response.status).to eq 403
       end
     end
   end
