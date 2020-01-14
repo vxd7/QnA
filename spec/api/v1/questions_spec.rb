@@ -54,7 +54,40 @@ describe 'Profiles API', type: :request do
             expect(answer_response[attr]).to eq answer.send(attr).as_json
           end
         end
-        
+      end
+    end
+  end
+
+  describe 'GET /api/v1/questions/id' do
+    let!(:question) { create(:question) }
+    let(:api_path) { "/api/v1/questions/#{question.id}" }
+
+    it_behaves_like 'API Authorizable' do
+      let(:method) { :get }
+    end
+
+    context 'authorized' do
+      let(:access_token) { create(:access_token) }
+      let(:question_response) { json['question'] }
+
+      it 'returns all public fields' do
+        get api_path,  params: { access_token: access_token.token }, headers: headers
+
+        %w[id title body created_at updated_at].each do |attr|
+          expect(question_response[attr]).to eq question.send(attr).as_json
+        end
+      end
+
+      it_behaves_like 'API Linkable' do
+        let(:resource) { question }
+      end
+
+      it_behaves_like 'API Commentable' do
+        let(:resource) { question }
+      end
+
+      it_behaves_like 'API Attachable' do
+        let(:resource) { question }
       end
     end
   end
