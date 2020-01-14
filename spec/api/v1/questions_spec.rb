@@ -87,7 +87,8 @@ describe 'Profiles API', type: :request do
       end
 
       it_behaves_like 'API Attachable' do
-        let(:resource) { question }
+        let!(:resource) { create(:question, :with_files )}
+        let(:api_path) { "/api/v1/questions/#{resource.id}" }
       end
     end
   end

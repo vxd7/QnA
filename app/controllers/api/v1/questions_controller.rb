@@ -6,7 +6,7 @@ class Api::V1::QuestionsController < Api::V1::BaseController
   end
 
   def show
-    @question = Question.find(params[:id])
+    @question = Question.with_attached_files.find(params[:id])
     render json: @question
   end
 end

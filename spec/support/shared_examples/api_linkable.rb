@@ -1,5 +1,5 @@
 shared_examples_for 'API Linkable' do
-  let!(:links) { create_list(:link, 3, linkable: resource) }
+  let!(:links) { create_list(:link, 3, :different, linkable: resource) }
   let(:resource_response) { json[resource.class.name.downcase] }
   let(:links_response) { resource_response['links'] }
   let(:links_response_first) { links_response.find { |l| l['id'] == links.first.id } }
