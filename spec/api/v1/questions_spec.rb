@@ -50,7 +50,7 @@ describe 'Profiles API', type: :request do
         end
 
         it 'returns all public fields' do 
-          %w[id body user_id created_at updated_at].each do |attr|
+          %w[id body created_at updated_at].each do |attr|
             expect(answer_response[attr]).to eq answer.send(attr).as_json
           end
         end
@@ -89,6 +89,103 @@ describe 'Profiles API', type: :request do
       it_behaves_like 'API Attachable' do
         let!(:resource) { create(:question, :with_files )}
         let(:api_path) { "/api/v1/questions/#{resource.id}" }
+      end
+    end
+  end
+
+  describe 'POST /api/v1/questions/' do
+    let(:headers) { { "ACCEPT" => 'application/json' } }
+    let(:api_path) { "/api/v1/questions" }
+
+    it_behaves_like 'API Authorizable' do
+      let(:method) { :post }
+    end
+
+    context 'authorized' do
+      let(:access_token) { create(:access_token) }
+      let(:test_question_attribs) { { 'title' => 'Test question title', 'body' => 'test title body' } }
+      let(:test_invalid_question_attribs) { { 'title' => 'Test question title', 'body' => '' } }
+
+      it 'creates new question' do
+        expect do
+          post api_path, params: { access_token: access_token.token, question: attributes_for(:question) }, headers: headers
+        end.to change(Question, :count).by(1)
+      end
+
+      it 'returns newly created question on success' do
+        post api_path, params: { access_token: access_token.token, question: test_question_attribs }, headers: headers
+
+        %w[title body].each do |attrib|
+          expect(json['question'][attrib]).to eq test_question_attribs[attrib].as_json
+        end
+      end
+
+      it 'returns success: false on fail' do
+        post api_path, params: { access_token: access_token.token, question: test_invalid_question_attribs }, headers: headers
+        expect(json['success']).to be false
+      end
+
+      it 'does not change questions count on fail' do
+        expect do
+          post api_path, params: { access_token: access_token.token, question: test_invalid_question_attribs }, headers: headers
+        end.to_not change(Question, :count)
+      end
+    end
+  end
+
+  describe 'PATCH /api/v1/questions/:id' do
+    let(:headers) { { "ACCEPT" => 'application/json' } }
+
+    let(:user) { create(:user) }
+    let!(:question) { create(:question, author: user) }
+
+    let(:new_question_params) { {'title' => 'New question title', 'body' => 'New question body' } }
+    let(:api_path) { api_v1_question_path(question) }
+
+    it_behaves_like 'API Authorizable' do
+      let(:method) { :patch }
+    end
+
+    context 'authorized' do
+      let(:access_token_author) { create(:access_token, resource_owner_id: user.id) }
+      let(:access_token_not_author) { create(:access_token) }
+
+      it 'changes the question if the author of the request is the quthor of the question' do
+        expect do
+          patch api_path, params: { access_token: access_token_author.token, question: new_question_params }, headers: headers
+          question.reload
+        end.to change(question, :title).to(new_question_params['title'])
+           .and change(question, :body).to(new_question_params['body'])
+      end
+
+      it 'does not change the question attributes if the request author is not the author of the question' do
+        RSpec::Matchers.define_negated_matcher :not_change, :change
+
+        expect do
+          patch api_path, params: { access_token: access_token_not_author.token, question: new_question_params }, headers: headers
+        end.to not_change(question, :title).and not_change(question, :body)
+      end
+    end
+  end
+
+  describe 'DELETE /api/v1/questions/:id' do
+    let(:headers) { { "ACCEPT" => 'application/json' } }
+
+    let(:user) { create(:user) }
+    let!(:question) { create(:question, author: user) }
+    let(:api_path) { api_v1_question_path(question) }
+
+    it_behaves_like 'API Authorizable' do
+      let(:method) { :delete }
+    end
+
+    context 'authorized' do
+      let(:access_token_author) { create(:access_token, resource_owner_id: user.id) }
+
+      it 'deletes the question' do
+        expect do
+          delete api_path, params: { access_token: access_token_author.token }, headers: headers
+        end.to change(Question, :count).by(-1)
       end
     end
   end
