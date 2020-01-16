@@ -17,20 +17,21 @@ class Api::V1::QuestionsController < Api::V1::BaseController
     if @question.save
       render json: @question
     else
-      render json: {'success': false }
+      render json: @question.errors.full_messages, status: :unprocessable_entity
     end
   end
 
   def update
-    if current_user.author_of?(@question)
-      @question.update(question_params.except(:files))
+    if @question.update(question_params.except(:files))
+      render json: @question
+    else
+      render json: @question.errors.full_messages, status: :unprocessable_entity
     end
   end
 
   def destroy
-    # Check if user is authorized to delete the question
-    if current_user.author_of?(@question)
-      @question.destroy
+    if @question.destroy
+      head :ok
     end
   end
 

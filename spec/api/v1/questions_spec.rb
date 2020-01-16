@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Profiles API', type: :request do
+describe 'Questions API', type: :request do
   let(:headers) { { "CONTENT_TYPE" => "application/json",
                     "ACCEPT" => 'application/json' } }
 
@@ -120,9 +120,9 @@ describe 'Profiles API', type: :request do
         end
       end
 
-      it 'returns success: false on fail' do
+      it 'returns unprocessible_entity on fail' do
         post api_path, params: { access_token: access_token.token, question: test_invalid_question_attribs }, headers: headers
-        expect(json['success']).to be false
+        expect(response.status).to eq 422
       end
 
       it 'does not change questions count on fail' do
@@ -140,6 +140,7 @@ describe 'Profiles API', type: :request do
     let!(:question) { create(:question, author: user) }
 
     let(:new_question_params) { {'title' => 'New question title', 'body' => 'New question body' } }
+    let(:new_question_params_invalid) { {'title' => 'New question title', 'body' => '' } }
     let(:api_path) { api_v1_question_path(question) }
 
     it_behaves_like 'API Authorizable' do
@@ -158,12 +159,29 @@ describe 'Profiles API', type: :request do
            .and change(question, :body).to(new_question_params['body'])
       end
 
+      it 'returns the updated question on success' do
+        patch api_path, params: { access_token: access_token_author.token, question: new_question_params }, headers: headers
+
+        expect(json['question']['title']).to eq new_question_params['title']
+        expect(json['question']['body']).to eq new_question_params['body']
+      end
+
       it 'does not change the question attributes if the request author is not the author of the question' do
         RSpec::Matchers.define_negated_matcher :not_change, :change
 
         expect do
           patch api_path, params: { access_token: access_token_not_author.token, question: new_question_params }, headers: headers
         end.to not_change(question, :title).and not_change(question, :body)
+      end
+
+      it 'returns 403 forbidden when theh request author is not the author of the question' do
+        patch api_path, params: { access_token: access_token_not_author.token, question: new_question_params }, headers: headers
+        expect(response.status).to eq 403
+      end
+
+      it 'returns unprocessable_entity when the requested changes are not valid but performed by the author of the question' do
+        patch api_path, params: { access_token: access_token_author.token, question: new_question_params_invalid }, headers: headers
+        expect(response.status).to eq 422
       end
     end
   end
@@ -181,11 +199,22 @@ describe 'Profiles API', type: :request do
 
     context 'authorized' do
       let(:access_token_author) { create(:access_token, resource_owner_id: user.id) }
+      let(:access_token_not_author) { create(:access_token) }
+
+      it 'returns ok when everything is ok' do
+        delete api_path, params: { access_token: access_token_author.token }, headers: headers
+        expect(response.status).to eq 200
+      end
 
       it 'deletes the question' do
         expect do
           delete api_path, params: { access_token: access_token_author.token }, headers: headers
         end.to change(Question, :count).by(-1)
+      end
+
+      it 'returns 403 forbidden when the request author is not the author of the question' do
+        delete api_path, params: { access_token: access_token_not_author.token }, headers: headers
+        expect(response.status).to eq 403
       end
     end
   end
