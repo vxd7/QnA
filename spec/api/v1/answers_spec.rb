@@ -95,9 +95,9 @@ describe 'Answers API', type: :request do
         expect(json['answer']['body']).to eq test_answer_attribs['body'].as_json
       end
 
-      it 'returns success: false on fail' do
+      it 'returns unprocessable_entity when proposed changes are invalid' do
         post api_path, params: { access_token: access_token.token, answer: test_invalid_answer_attribs }, headers: headers
-        expect(json['success']).to be false
+        expect(response.status).to eq 422
       end
 
       it 'does not change answers count on fail' do
@@ -115,6 +115,7 @@ describe 'Answers API', type: :request do
     let!(:answer) { create(:answer, author: user) }
 
     let(:new_asnwer_params) { {'body' => 'New answer body' } }
+    let(:new_asnwer_params_invalid) { {'body' => '' } }
     let(:api_path) { api_v1_answer_path(answer) }
 
     it_behaves_like 'API Authorizable' do
@@ -132,12 +133,32 @@ describe 'Answers API', type: :request do
         end.to change(answer, :body).to(new_asnwer_params['body'])
       end
 
-      it 'does not change the answer attributes if the request author is not the author of the answer' do
-        RSpec::Matchers.define_negated_matcher :not_change, :change
+      it 'returns the updated answer on success' do
+        patch api_path, params: { access_token: access_token_author.token, answer: new_asnwer_params}, headers: headers
+        expect(json['answer']['body']).to eq new_asnwer_params['body']
+      end
 
+      it 'returns the unprocessable_entity when proposed changes are invalid' do
+        patch api_path, params: { access_token: access_token_author.token, answer: new_asnwer_params_invalid }, headers: headers
+        expect(response.status).to eq 422
+      end
+
+      it 'returns 403 forbidden when the request author is not the author of the answer' do
+        patch api_path, params: { access_token: access_token_not_author.token, answer: new_asnwer_params}, headers: headers
+        expect(response.status).to eq 403
+      end
+
+      it 'does not change the answer attributes if the request author is not the author of the answer' do
         expect do
-          patch api_path, params: { access_token: access_token_not_author.token, question: new_asnwer_params }, headers: headers
-        end.to not_change(answer, :body)
+          patch api_path, params: { access_token: access_token_not_author.token, answer: new_asnwer_params }, headers: headers
+        end.to_not change(answer, :body)
+      end
+
+      it 'does not change the answer if the request parameters are invalid' do
+        expect do
+          patch api_path, params: { access_token: access_token_author.token, answer: new_asnwer_params_invalid }, headers: headers
+          answer.reload
+        end.to_not change(answer, :body)
       end
     end
   end
@@ -155,11 +176,22 @@ describe 'Answers API', type: :request do
 
     context 'authorized' do
       let(:access_token_author) { create(:access_token, resource_owner_id: user.id) }
+      let(:access_token_not_author) { create(:access_token) }
+
+      it 'returns ok on success' do
+        delete api_path, params: { access_token: access_token_author.token }, headers: headers
+        expect(response.status).to eq 200
+      end
 
       it 'deletes the answer' do
         expect do
           delete api_path, params: { access_token: access_token_author.token }, headers: headers
         end.to change(Answer, :count).by(-1)
+      end
+
+      it 'returns 403 forbidden when request author is not the answer author' do
+        delete api_path, params: { access_token: access_token_not_author.token }, headers: headers
+        expect(response.status).to eq 403
       end
     end
   end
