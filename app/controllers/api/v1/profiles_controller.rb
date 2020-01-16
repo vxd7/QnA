@@ -5,7 +5,7 @@ class Api::V1::ProfilesController < Api::V1::BaseController
     render json: current_user
   end
 
-  def everyone_except_me
+  def index
     render json: User.where.not(id: current_user.id)
   end
 end

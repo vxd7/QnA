@@ -35,9 +35,9 @@ describe 'Profiles API', type: :request do
     end
   end
 
-  describe 'GET /api/v1/profiles/everyone_except_me' do
+  describe 'GET /api/v1/profiles' do
+    let(:api_path) { api_v1_profiles_path }
     it_behaves_like 'API Authorizable' do
-      let(:api_path) { '/api/v1/profiles/everyone_except_me' }
       let(:method) { :get }
     end
 
@@ -47,7 +47,7 @@ describe 'Profiles API', type: :request do
       let(:access_token) { create(:access_token, resource_owner_id: me.id) }
       let(:everyone_except_me_response) { json['users'].first }
 
-      before { get '/api/v1/profiles/everyone_except_me', params: { access_token: access_token.token }, headers: headers }
+      before { get api_path, params: { access_token: access_token.token }, headers: headers }
 
       it 'returns list of all users except me' do
         expect(json['users'].size).to eq other_users.size
