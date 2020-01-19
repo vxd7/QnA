@@ -28,9 +28,9 @@ class Ability
     guest_abilities
     can :me, :all
     can :everyone_except_me, :all
-    can :create, [Question, Answer, Comment]
+    can :create, [Question, Answer, Comment, Subscription]
     can :update, [Question, Answer], user_id: user.id
-    can :destroy, [Question, Answer], user_id: user.id
+    can :destroy, [Question, Answer, Subscription], user_id: user.id
 
     # Can delete files only if we own the parent resource
     # which has these attached files

@@ -16,6 +16,9 @@ class Question < ApplicationRecord
 
   after_create :calculate_reputation
 
+  # Author of the question is auto subscribed to all new answers to that question
+  after_create :autosubscribe
+
   def best_answer
     answers.find_by(best_answer: true)
   end
@@ -41,4 +44,9 @@ class Question < ApplicationRecord
   def calculate_reputation
     ReputationJob.perform_later(self)
   end
+
+  def autosubscribe
+    subscribe(author)
+  end
+
 end
