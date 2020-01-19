@@ -36,12 +36,14 @@ RSpec.describe Question, type: :model do
   end
 
   describe '#users_subscribed' do
-    let(:users) { create_list(:user, 3) }
-    let(:question) { create(:question) }
+    let!(:users) { create_list(:user, 3) }
+    let!(:question) { create(:question) }
 
     it 'returns all users subscribed to this question' do
       users.each { |user| create(:subscription, question: question, user: user) }
-      expect(question.users_subscribed).to eq users
+      users.append(question.author)
+      question.reload
+      expect(question.users_subscribed).to match_array users
     end
   end
 

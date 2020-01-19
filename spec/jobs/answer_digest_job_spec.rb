@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe AnswerDigestJob, type: :job do
   let(:service) { double('Services::AnswerDigest') }
-  let(:answer) { create(answer) }
+  let(:answer) { create(:answer) }
 
   before do
     allow(Services::AnswerDigest).to receive(:new).and_return(service)
