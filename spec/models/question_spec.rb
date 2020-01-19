@@ -9,6 +9,7 @@ RSpec.describe Question, type: :model do
     it { should have_many(:links).dependent(:destroy) }
     it { should belong_to(:author).class_name(:User) }
     it { should have_one(:reward).dependent(:destroy) }
+    it { should have_many(:subscriptions).dependent(:destroy) }
   end
 
   describe 'attribute validations' do
@@ -31,6 +32,51 @@ RSpec.describe Question, type: :model do
     it 'calls ReputationJob' do
       expect(ReputationJob).to receive(:perform_later).with(question)
       question.save!
+    end
+  end
+
+  describe '#users_subscribed' do
+    let(:users) { create_list(:user, 3) }
+    let(:question) { create(:question) }
+
+    it 'returns all users subscribed to this question' do
+      users.each { |user| create(:subscription, question: question, user: user) }
+      expect(question.users_subscribed).to eq users
+    end
+  end
+
+  describe '#subscribe' do
+    let!(:user) { create(:user) }
+    let(:question) { create(:question) }
+
+    context 'not subscribed user' do
+      it 'creates the subscription' do
+        question.subscribe(user)
+        question.reload
+        expect(question.users_subscribed).to include user
+      end
+    end
+
+    context 'already subscribed user' do
+      it 'does not subscribe them again' do
+        question.subscribe(user)
+        question.reload
+        expect{question.subscribe(user)}.to_not change{ question.users_subscribed }
+      end
+    end
+  end
+
+  describe '#ubsubscribe' do
+    let!(:user) { create(:user) }
+    let(:question) { create(:question) }
+    context 'subscribed user' do
+      before { question.subscribe(user) }
+
+      it 'unsubscribes them' do
+        question.unsubscribe(user)
+        question.reload
+        expect(question.users_subscribed).to_not include user
+      end
     end
   end
 end
