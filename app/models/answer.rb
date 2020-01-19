@@ -15,6 +15,9 @@ class Answer < ApplicationRecord
   # but multiple NOT BEST answers for the given question
   validates :best_answer, uniqueness: { scope: :question_id }, if: :best_answer?
 
+  # Send notification to all users subscribed to this answer's question
+  after_create :send_answer_digest
+
   def mark_best
     transaction do
       # Remove best answer flag from previous best answer
@@ -22,5 +25,11 @@ class Answer < ApplicationRecord
       self.update!(best_answer: true)
       question.reward&.update!(user: author)
     end
+  end
+
+  private
+
+  def send_answer_digest
+    AnswerDigestJob.perform_later(self)
   end
 end
