@@ -1,14 +1,11 @@
 class SubscriptionsController < ApplicationController
   before_action :authenticate_user!
-  authorize_resource
-
   before_action :find_question, only: %i(create)
   before_action :find_sub, only: :destroy
 
-  def create
-    # Do not create subscription if current user has already subscribed to it
-    return head :forbidden if @question.subscribed?(current_user)
+  authorize_resource
 
+  def create
     @question.subscribe(current_user)
     flash.now['notice'] = 'Successfully subscribed!'
   end

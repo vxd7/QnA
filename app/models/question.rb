@@ -5,8 +5,9 @@ class Question < ApplicationRecord
   has_many :answers, dependent: :destroy
   has_many :links, dependent: :destroy, as: :linkable
   has_one :reward, dependent: :destroy
-  has_many :subscriptions, dependent: :destroy
   belongs_to :author, class_name: 'User', foreign_key: :user_id
+  has_many :subscriptions, dependent: :destroy
+  has_many :users_subscribed, through: :subscriptions, source: :user
 
   has_many_attached :files
   accepts_nested_attributes_for :links, reject_if: :all_blank, allow_destroy: true
@@ -23,12 +24,8 @@ class Question < ApplicationRecord
     answers.find_by(best_answer: true)
   end
 
-  def users_subscribed
-    subscriptions.collect(&:user)
-  end
-
   def subscribed?(user)
-    users_subscribed.include?(user)
+    users_subscribed.exists?(user.id) if user
   end
 
   def subscribe(user)

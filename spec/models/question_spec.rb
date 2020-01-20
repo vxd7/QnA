@@ -10,6 +10,7 @@ RSpec.describe Question, type: :model do
     it { should belong_to(:author).class_name(:User) }
     it { should have_one(:reward).dependent(:destroy) }
     it { should have_many(:subscriptions).dependent(:destroy) }
+    it { should have_many(:users_subscribed).through(:subscriptions).source(:user) }
   end
 
   describe 'attribute validations' do
@@ -35,15 +36,20 @@ RSpec.describe Question, type: :model do
     end
   end
 
-  describe '#users_subscribed' do
-    let!(:users) { create_list(:user, 3) }
-    let!(:question) { create(:question) }
+  describe '#subscribed?' do
+    let!(:user) { create(:user) }
+    let(:question) { create(:question) } 
+    context 'not subscribed user' do 
+      it 'should be false' do
+        expect(question.subscribed?(user)).to be false
+      end
+    end
 
-    it 'returns all users subscribed to this question' do
-      users.each { |user| create(:subscription, question: question, user: user) }
-      users.append(question.author)
-      question.reload
-      expect(question.users_subscribed).to match_array users
+    context 'subscribed_user' do
+      let!(:subscription) { create(:subscription, question: question, user: user) }
+      it 'should be true' do
+        expect(question.subscribed?(user)).to be true
+      end
     end
   end
 
