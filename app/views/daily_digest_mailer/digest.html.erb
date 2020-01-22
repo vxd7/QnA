@@ -1,0 +1,7 @@
+<h1>Questions from the past 24 hours</h1>
+
+<% @target_questions.each do |question| %>
+    <p>
+    <%= link_to question.title, question_path(question) %>
+    </p>
+<% end %>

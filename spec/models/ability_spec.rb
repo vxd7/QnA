@@ -26,6 +26,25 @@ describe Ability do
     it { should_not be_able_to :manage, :all }
     it { should be_able_to :read, :all }
 
+    context 'subscriptions' do
+      let(:question_by_user) { create(:question, author: user) }
+      let(:question_by_other) { create(:question, author: other) }
+
+      it { should be_able_to :create, Subscription }
+      it { should be_able_to :destroy, Subscription }
+
+      context 'already subscribed' do
+        let(:question_already_subscribed) { create(:question) }
+        let(:subscription) { create(:subscription, question: question_already_subscribed, user: user) }
+
+        it { should_not be_able_to :subscribe, question_already_subscribed }
+      end
+
+      context 'not subscribed' do
+        it { should_not be_able_to :unsubscribe, :question_by_other }
+      end
+    end
+
     context 'question' do
       it { should be_able_to :create, Question }
 

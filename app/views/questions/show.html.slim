@@ -1,4 +1,6 @@
 = render @question
+.subs
+  = render 'shared/subs', resource: @question, subscription: @subscription
 .question-errors
   = render 'shared/errors', resource: @question
 
@@ -15,3 +17,4 @@ h2= 'Answers to this question'
   div
     h2= 'Create an answer'
     = render 'answers/form', question: @question, answer: @answer
+

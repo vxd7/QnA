@@ -32,6 +32,14 @@ class Ability
     can :update, [Question, Answer], user_id: user.id
     can :destroy, [Question, Answer], user_id: user.id
 
+    can :create, Subscription do |sub|
+      !sub.question.subscribed?(user)
+    end
+
+    can :destroy, Subscription do |sub|
+      sub.question.subscribed?(user)
+    end
+
     # Can delete files only if we own the parent resource
     # which has these attached files
     can :destroy, ActiveStorage::Attachment do |file|
